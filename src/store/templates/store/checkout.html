@@ -52,13 +52,21 @@ checkout page
             <h3>Order summary</h3>
             <hr>
             <div class="cart-row">
-                <div style="flex: 2;"><img class="row-image" src="{% static 'images/ph.png' %}" alt=""></div>
-                <div style="flex: 2;">new item</div>
-                <div style="flex: 1;">$10</div>
-                <div style="flex: 1;">2</div>
+                <div style="flex: 2;"></div>
+                <div style="flex: 2;"><strong>Product</strong></div>
+                <div style="flex: 1;"><strong>Price</strong></div>
+                <div style="flex: 1;"><strong>Quantity</strong></div>
             </div>
-            <h5>Items: 2</h5>
-            <h5>Total: $20</h5>
+            {% for item in all_items %}
+            <div class="cart-row">
+                <div style="flex: 2;"><img class="row-image" src="{{item.product.imageURL}}" alt=""></div>
+                <div style="flex: 2;">{{item.product.name}}</div>
+                <div style="flex: 1;">${{item.product.price}}</div>
+                <div style="flex: 1;">X {{item.quantity}}</div>
+            </div>
+            {% endfor %}
+            <h5>Items: {{the_order.get_cart_items}}</h5>
+            <h5>Total: ${{the_order.get_cart_total}}</h5>
         </div>
 
     </div>
