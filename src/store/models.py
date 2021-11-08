@@ -19,10 +19,14 @@ class Product(models.Model):
     price = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
     digital = models.BooleanField(default=False, null=True, blank=True)
-    # image = models.ImageField()
+    image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    @property
+    def imageURL(self):
+        return self.url
 
 
 class Order(models.Model):
