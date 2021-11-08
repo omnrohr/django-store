@@ -1,8 +1,52 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
 store page
 {% endblock %}
 {% block body %}
+<section class="py-12 bg-light">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-10 text-center">welcome to store</h2>
+        </div>
+    </div>
 
+        <div class="row">
+            <div class="col-lg-4">
+                <img class="thumbnail" src="{% static 'images/ph.png' %}" alt="newimage">
+                <div class="box-element product">
+                    <h6><strong>Product</strong></h6>
+                    <hr>
+    
+                    <button class="btn btn-outline-secondary add-btn">Add to Cart</button>
+                    
+                    <a class="btn btn-outline-success" href="#">View</a>
+                    <h4 class="price"><strong>$12</strong></h4>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <img class="thumbnail" src="{% static 'images/ph.png' %}" alt="newimage">
+                <div class="box-element product">
+                    <h6><strong>Product</strong></h6>
+                    <hr>
+    
+                    <button class="btn btn-outline-secondary add-btn">Add to Cart</button>
+                    
+                    <a class="btn btn-outline-success" href="#">View</a>
+                    <h4 class="price"><strong>$12</strong></h4>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <img class="thumbnail" src="{% static 'images/ph.png' %}" alt="newimage">
+                <div class="box-element product">
+                    <h6><strong>Product</strong></h6>
+                    <hr>
+                    <button class="btn btn-outline-secondary add-btn">Add to Cart</button>
+                    
+                    <a class="btn btn-outline-success" href="#">View</a>
+                    <h4 class="price"><strong>$12</strong></h4>
+                </div>
+            </div>
 
+</section>
 {% endblock %}
