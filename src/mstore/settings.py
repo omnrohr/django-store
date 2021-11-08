@@ -56,7 +56,7 @@ ROOT_URLCONF = 'mstore.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ospath.join(BASE_DIR, 'templates')],
+        'DIRS': [ospath.join(BASE_DIR, 'store/templates/store')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
