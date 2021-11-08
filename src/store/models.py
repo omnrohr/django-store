@@ -26,7 +26,11 @@ class Product(models.Model):
 
     @property
     def imageURL(self):
-        return self.url
+        try:
+            url = self.image.url
+        except:
+            url = "/images/ph.png"
+        return url
 
 
 class Order(models.Model):
@@ -49,7 +53,7 @@ class OrderItems(models.Model):
     added_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.product
+        return str(self.product)
 
 
 class ShippingAddress(models.Model):
