@@ -74,6 +74,7 @@ function updateUserOrder(productId, action){
 		})
         .then(console.log('here1'))
 		.then((data) => {
-		    console.log('data:', data) 
+		    console.log('data:', data)
+            location.reload()
 		});
 }

@@ -7,8 +7,24 @@ import json
 
 
 def home_view(request):
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(
+            customer=customer, completed=False)
+        # go to newdjango project to understand the relation from terminal
+        items = order.orderitems_set.all()
+        # it will return all orderitems have the order number
+        cartItems = order.get_cart_items
+
+    else:
+        items = []
+        # if user not authenticated
+        order = {'get_cart_items': 0, 'get_cart_total': 0}
+        cartItems = order['get_cart_items']
+
     all_procuts = Product.objects.all()
-    context = {"products": all_procuts}
+    context = {"products": all_procuts, 'cartItems': cartItems}
     return render(request, 'store/store.html', context)
 
 
@@ -21,11 +37,13 @@ def cart_view(request):
         # go to newdjango project to understand the relation from terminal
         items = order.orderitems_set.all()
         # it will return all orderitems have the order number
+        cartItems = order.get_cart_items
     else:
         items = []
         # if user not authenticated
         order = {'get_cart_items': 0, 'get_cart_total': 0}
-    context = {"all_items": items, "the_order": order}
+        cartItems = order['get_cart_items']
+    context = {"all_items": items, "the_order": order, 'cartItems': cartItems}
     return render(request, 'store/cart.html', context)
 
 
@@ -38,11 +56,13 @@ def checkout_view(request):
         # go to newdjango project to understand the relation from terminal
         items = order.orderitems_set.all()
         # it will return all orderitems have the order number
+        cartItems = order.get_cart_items
     else:
         items = []
         # if user not authenticated
-        order = {'get_cart_items': 0, 'get_cart_total': 0}
-    context = {"all_items": items, "the_order": order}
+        order = {'get_cart_items': 0, 'get_cart_total': 0, 'shipping': False}
+        cartItems = order['get_cart_items']
+    context = {"all_items": items, "the_order": order, 'cartItems': cartItems}
 
     return render(request, 'store/checkout.html', context)
 
@@ -77,3 +97,8 @@ def updateitem(request):
     else:
         raise TypeError
     return JsonResponse('Item was added', safe=False)
+
+
+def orderprocess(request):
+    print(request.body)
+    return JsonResponse('payment done...', safe=False)
