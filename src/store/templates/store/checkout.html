@@ -8,9 +8,7 @@ checkout page
     <div class="col-lg-6">
         <div id="form-wrapper" class="box-element">
             <form action="" id="form">
-                {% csrf_token %}
-                <input type="hidden" id="csrf_token" value='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
-                <div id="user-info">
+                <div id="user-info" class="fortest">
                     <div class="form-field">
                         <input required class="form-control" type="text" name="name" placeholder="Name...">
                     </div>
@@ -78,6 +76,7 @@ checkout page
 </div>
 
 <script>
+    var user = '{{request.user}}'
     var shipping = '{{the_order.shipping}}'
     var total = '{{the_order.get_cart_total|floatformat:2}}'
 
@@ -86,9 +85,8 @@ checkout page
         document.getElementById('shipping-info').innerHTML = ''
     }
 
-    var user = user
     console.log('user:',user)
-    if (user != 'AnonymousUser' && user != undefined){
+    if (user != 'AnonymousUser'){
 		 	document.getElementById('user-info').innerHTML = ''
 		 }
     
@@ -103,8 +101,7 @@ checkout page
 
     var form = document.getElementById('form')
 
-    csrftoken = document.getElementById('csrf_token').value
-    console.log('newtoken', document.getElementById('csrf_token').value)
+
 
     document.addEventListener('submit', function(e){
         e.preventDefault()
