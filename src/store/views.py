@@ -88,14 +88,14 @@ def orderprocess(request):
 
         order.save()
 
-    if order.shipping == True:
-        ShippingAddress.objects.create(
-            customer=customer,
-            order=order,
-            address=data['shipping']['address'],
-            city=data['shipping']['city'],
-            zipcode=data['shipping']['zipcode'],
-            state=data['shipping']['state']
-        )
+        if order.shipping == True:
+            ShippingAddress.objects.create(
+                customer=customer,
+                order=order,
+                address=data['shipping']['address'],
+                city=data['shipping']['city'],
+                zipcode=data['shipping']['zipcode'],
+                state=data['shipping']['state']
+            )
 
     return JsonResponse('payment done...', safe=False)
