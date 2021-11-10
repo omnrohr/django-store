@@ -85,8 +85,8 @@ checkout page
     }
 
     var user = user
-    console.log(user)
-    if (user != 'AnonymousUser'){
+    console.log('user:',user)
+    if (user != 'AnonymousUser' && user != undefined){
 		 	document.getElementById('user-info').innerHTML = ''
 		 }
 
