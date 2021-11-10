@@ -2,26 +2,15 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Product, Order, OrderItems, User, ShippingAddress
 import json
-
+import datetime
+from .utils import cookieCart, cartData
 # Create your views here.
 
 
 def home_view(request):
 
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(
-            customer=customer, completed=False)
-        # go to newdjango project to understand the relation from terminal
-        items = order.orderitems_set.all()
-        # it will return all orderitems have the order number
-        cartItems = order.get_cart_items
-
-    else:
-        items = []
-        # if user not authenticated
-        order = {'get_cart_items': 0, 'get_cart_total': 0}
-        cartItems = order['get_cart_items']
+    data = cartData(request)
+    cartItems = data['cartItems']
 
     all_procuts = Product.objects.all()
     context = {"products": all_procuts, 'cartItems': cartItems}
@@ -29,39 +18,20 @@ def home_view(request):
 
 
 def cart_view(request):
+    data = cartData(request)
+    items = data['items']
+    order = data['order']
+    cartItems = data['cartItems']
 
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(
-            customer=customer, completed=False)
-        # go to newdjango project to understand the relation from terminal
-        items = order.orderitems_set.all()
-        # it will return all orderitems have the order number
-        cartItems = order.get_cart_items
-    else:
-        items = []
-        # if user not authenticated
-        order = {'get_cart_items': 0, 'get_cart_total': 0}
-        cartItems = order['get_cart_items']
     context = {"all_items": items, "the_order": order, 'cartItems': cartItems}
     return render(request, 'store/cart.html', context)
 
 
 def checkout_view(request):
-
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(
-            customer=customer, completed=False)
-        # go to newdjango project to understand the relation from terminal
-        items = order.orderitems_set.all()
-        # it will return all orderitems have the order number
-        cartItems = order.get_cart_items
-    else:
-        items = []
-        # if user not authenticated
-        order = {'get_cart_items': 0, 'get_cart_total': 0, 'shipping': False}
-        cartItems = order['get_cart_items']
+    data = cartData(request)
+    items = data['items']
+    order = data['order']
+    cartItems = data['cartItems']
     context = {"all_items": items, "the_order": order, 'cartItems': cartItems}
 
     return render(request, 'store/checkout.html', context)
@@ -100,5 +70,32 @@ def updateitem(request):
 
 
 def orderprocess(request):
-    print(request.body)
+    transaction_id = datetime.datetime.now().timestamp()
+    print(transaction_id)
+    if request.user.is_authenticated:
+        data = json.loads(request.body)
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(
+            customer=customer, completed=False)
+        total = float(data['form']['total'])
+        order.transaction_id = transaction_id
+        if total == order.get_cart_total:
+            order.completed = True
+
+        else:
+            total = order.get_cart_total
+            order.completed = True
+
+        order.save()
+
+    if order.shipping == True:
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            zipcode=data['shipping']['zipcode'],
+            state=data['shipping']['state']
+        )
+
     return JsonResponse('payment done...', safe=False)
