@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Product, Order, OrderItems, User, ShippingAddress
+from .models import Customer, Product, Order, OrderItems, User, ShippingAddress
 import json
 import datetime
-from .utils import cookieCart, cartData
+from .utils import cookieCart, cartData, guestOrder
 # Create your views here.
 
 
@@ -70,6 +70,7 @@ def updateitem(request):
 
 
 def orderprocess(request):
+    data = json.loads(request.body)
     transaction_id = datetime.datetime.now().timestamp()
     print(transaction_id)
     if request.user.is_authenticated:
@@ -77,25 +78,29 @@ def orderprocess(request):
         customer = request.user.customer
         order, created = Order.objects.get_or_create(
             customer=customer, completed=False)
-        total = float(data['form']['total'])
-        order.transaction_id = transaction_id
-        if total == order.get_cart_total:
-            order.completed = True
 
-        else:
-            total = order.get_cart_total
-            order.completed = True
+    else:
+        customer, order = guestOrder(request, data)
 
-        order.save()
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
+    if total == order.get_cart_total:
+        order.completed = True
 
-        if order.shipping == True:
-            ShippingAddress.objects.create(
-                customer=customer,
-                order=order,
-                address=data['shipping']['address'],
-                city=data['shipping']['city'],
-                zipcode=data['shipping']['zipcode'],
-                state=data['shipping']['state']
-            )
+    else:
+        total = order.get_cart_total
+        order.completed = True
+
+    order.save()
+
+    if order.shipping == True:
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            zipcode=data['shipping']['zipcode'],
+            state=data['shipping']['state']
+        )
 
     return JsonResponse('payment done...', safe=False)
